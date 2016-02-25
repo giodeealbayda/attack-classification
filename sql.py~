@@ -93,21 +93,38 @@ for row in attack_persistence:
 # create attack persistence
 create_attack_persistence = ("INSERT INTO attack_persistence (attackID, to_monitor, response) VALUES (%s, %s, %s)")
 cursor.execute(create_attack_persistence, attack_persistence)
-cursor.commit() 
+cursor.commit()
 
 # edit attack persistence
-
+edit_attack_persistence = cursor.execute("""
+UPDATE attack_persistence SET attackID=%s, to_monitor=%s, response=%s WHERE attackpersistenceID==%s
+""", (attackID, to_monitor, response, attackpersistenceID) )
 # delete attack persistence
+delete_attack_persistence = cursor.execute("DELETE FROM attack_persistence WHERE attackpersistenceID==%s" % (attackpersistenceID) )
 
 # execute the SQL query for permanent_block
 cursor.execute("select * from Permanent_Block")
-permanent_block = cursor.fetchall()
+permanent_block_record = cursor.fetchall()
+
+permanent_block {
+	'responseID': responseID
+}
 
 for row in permanent_block:
 	permanent_blockID = row[0]
 	responseID = row[1]
 
 #	print"\n\n--- Permanent Block: ", permanent_blockID, ": ", responseID
+
+# create permanent block
+create_permanent_block = ("INSERT INTO Permanent_Block (responseID) values (%s)")
+cursor.execute(create_permanent_block, permanent_block)
+cursor.commit()
+
+# edit permanent block
+edit_permanent_blck = cursor.execute("""
+UPDATE Permanent_Block SET responseID=%s WHERE permament_blockID==%s
+""", (responseID, permanent_blockID) )
 
 # execute the SQL query for TCP reset.
 cursor.execute("select * from TCP_Reset")

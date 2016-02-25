@@ -100,10 +100,15 @@ edit_attack_persistence = cursor.execute("""
 UPDATE attack_persistence SET attackID=%s, to_monitor=%s, response=%s WHERE attackpersistenceID==%s
 """, (attackID, to_monitor, response, attackpersistenceID) )
 # delete attack persistence
+delete_attack_persistence = cursor.execute("DELETE FROM attack_persistence WHERE attackpersistenceID==%s" % (attackpersistenceID) )
 
 # execute the SQL query for permanent_block
 cursor.execute("select * from Permanent_Block")
-permanent_block = cursor.fetchall()
+permanent_block_record = cursor.fetchall()
+
+permanent_block {
+	'responseID': responseID
+}
 
 for row in permanent_block:
 	permanent_blockID = row[0]
@@ -111,15 +116,44 @@ for row in permanent_block:
 
 #	print"\n\n--- Permanent Block: ", permanent_blockID, ": ", responseID
 
+# create permanent block
+create_permanent_block = ("INSERT INTO Permanent_Block (responseID) values (%s)")
+cursor.execute(create_permanent_block, permanent_block)
+cursor.commit()
+
+# edit permanent block
+edit_permanent_block = cursor.execute("""
+UPDATE Permanent_Block SET responseID=%s WHERE permament_blockID==%s
+""", (responseID, permanent_blockID) )
+
+# delete permanent block
+delete_permanent_block = cursor.execute("DELETE FROM Permanent_Block WHERE permanent_blockID==%s" % (permanent_blockID) )
+
 # execute the SQL query for TCP reset.
 cursor.execute("select * from TCP_Reset")
-tcp_reset = cursor.fetchall()
+tcp_reset_record = cursor.fetchall()
+
+tcp_reset {
+	'responseID': responseID
+}
 
 for row in tcp_reset:
 	tcp_resetID = row[0]
 	responseID = row[1]
 
 #	print"\n\n--- TCP Reset: ", tcp_resetID, ": ", responseID
+
+# create TCP Reset
+create_TCP_reset = ("INSERT INTO TCP_Reset (responseID) values (%s)")
+cursor.execute(create_TCP_reset, responseID)
+
+# edit TCP Reset
+edit_TCP_reset = cursor.execute("""
+UPDATE TCP_Reset SET responseID=%s WHERE tcp_resetID==%s
+""", (responseID, tcp_resetID) )
+
+# delete TCP Reset
+delete_TCP_reset = cursor.execute("DELETE FROM TCP_Reset WHERE tcp_resetID==%s" % (tcp_resetID) )
 
 # execute the SQL query for Timebased Block
 cursor.execute("select * from Timebased_Block")
