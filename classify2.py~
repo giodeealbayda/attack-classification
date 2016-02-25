@@ -24,7 +24,7 @@ week_attack = cursor.fetchall()
 
 persistence_basis = 7.0 # 7 days
 
-# per attack per attack
+# per attack per attacker
 cursor.execute("select a.attack_name, count(a.attack_name), a.attackerID from attack a, attack_persistence ap where ap.to_monitor = 1 and a.attackID = ap.attackID group by a.attack_name, a.attackerID");
 to_evaluate = cursor.fetchall()
 
@@ -33,11 +33,11 @@ cursor.execute("select hp.victimID from high_priority_users hp, victim v WHERE v
 hp_users = cursor.fetchall()
 
 i=0;
-for row in week_attack:
-	print row[0]
+#for row in week_attack:
+#	print row[0]
 
-for row in to_evaluate:
-	print row[0], ": ", row[1]
+#for row in to_evaluate:
+#	print row[0], ": ", row[1]
 
 
 for row in to_evaluate:
@@ -63,13 +63,13 @@ for row in to_evaluate:
 				elif attack_rate < 0.5: # low
 					response = "ACL Block 2 days";
 	
-					if protocol == "TCP":
+					if protocol == "tcp":
 						response += " TCP Reset";
 
 				else: # medium
 	
-					if protocol == "TCP":
+					if protocol == "tcp":
 						response += " TCP Reset";
 	
-#			print i, ": ", response
+			print row[0], ": ", response
 			i+=1

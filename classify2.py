@@ -33,11 +33,11 @@ cursor.execute("select hp.victimID from high_priority_users hp, victim v WHERE v
 hp_users = cursor.fetchall()
 
 i=0;
-for row in week_attack:
-	print row[0]
+#for row in week_attack:
+#	print row[0]
 
-for row in to_evaluate:
-	print row[0], ": ", row[1]
+#for row in to_evaluate:
+#	print row[0], ": ", row[1]
 
 
 for row in to_evaluate:
@@ -63,13 +63,13 @@ for row in to_evaluate:
 				elif attack_rate < 0.5: # low
 					response = "ACL Block 2 days";
 	
-					if protocol == "TCP":
+					if protocol == "tcp":
 						response += " TCP Reset";
 
 				else: # medium
 	
-					if protocol == "TCP":
+					if protocol == "tcp":
 						response += " TCP Reset";
 	
-#			print i, ": ", response
+			print row1[0], ": ", response
 			i+=1
