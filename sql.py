@@ -37,11 +37,11 @@ cursor.commit()
 
 # edit attack
 edit_attack = cursor.execute("""
-UPDATE attack SET source_ip=%s, source_port=%s, attackerID=%s, destination_ip=%s, destination_port=%s, victimID=%s, attack_name=%s, protocol=%s, level=%s, attack_date=%s WHERE attackID==%s
+UPDATE attack SET source_ip=%s, source_port=%s, attackerID=%s, destination_ip=%s, destination_port=%s, victimID=%s, attack_name=%s, protocol=%s, level=%s, attack_date=%s WHERE attackID=%s
 """, (source_ip, source_port, attackerID, destination_ip, destination_port, victimID, protocol, level, attack_date) )
 
 # delete attack
-delete_attack = cursor.execute("DELETE FROM attack WHERE attackID==%s" % (attackID) )
+delete_attack = cursor.execute("DELETE FROM attack WHERE attackID=%s" % (attackID) )
 
 
 # execute the SQL query for attacker.
@@ -65,11 +65,11 @@ for row in attacker:
 
 # edit attacker
 edit_attacker = cursor.execute("""
-UPDATE attacker SET ip_address=%s WHERE attackerID==%s
+UPDATE attacker SET ip_address=%s WHERE attackerID=%s
 """, (ip_address, attackerID) )
 
 # delete attacker
-delete_attacker = cursor.execute("DELETE FROM attacker WHERE attackerID==%s" % (attackerID) )
+delete_attacker = cursor.execute("DELETE FROM attacker WHERE attackerID=%s" % (attackerID) )
 
 # execute the SQL query for attack_persistence.
 cursor.execute("select * from attack_persistence")
@@ -97,10 +97,10 @@ cursor.commit()
 
 # edit attack persistence
 edit_attack_persistence = cursor.execute("""
-UPDATE attack_persistence SET attackID=%s, to_monitor=%s, response=%s WHERE attackpersistenceID==%s
+UPDATE attack_persistence SET attackID=%s, to_monitor=%s, response=%s WHERE attackpersistenceID=%s
 """, (attackID, to_monitor, response, attackpersistenceID) )
 # delete attack persistence
-delete_attack_persistence = cursor.execute("DELETE FROM attack_persistence WHERE attackpersistenceID==%s" % (attackpersistenceID) )
+delete_attack_persistence = cursor.execute("DELETE FROM attack_persistence WHERE attackpersistenceID=%s" % (attackpersistenceID) )
 
 # execute the SQL query for permanent_block
 cursor.execute("select * from Permanent_Block")
@@ -123,11 +123,11 @@ cursor.commit()
 
 # edit permanent block
 edit_permanent_block = cursor.execute("""
-UPDATE Permanent_Block SET responseID=%s WHERE permament_blockID==%s
+UPDATE Permanent_Block SET responseID=%s WHERE permament_blockID=%s
 """, (responseID, permanent_blockID) )
 
 # delete permanent block
-delete_permanent_block = cursor.execute("DELETE FROM Permanent_Block WHERE permanent_blockID==%s" % (permanent_blockID) )
+delete_permanent_block = cursor.execute("DELETE FROM Permanent_Block WHERE permanent_blockID=%s" % (permanent_blockID) )
 
 # execute the SQL query for TCP reset.
 cursor.execute("select * from TCP_Reset")
@@ -150,11 +150,11 @@ cursor.commit()
 
 # edit TCP Reset
 edit_TCP_reset = cursor.execute("""
-UPDATE TCP_Reset SET responseID=%s WHERE tcp_resetID==%s
+UPDATE TCP_Reset SET responseID=%s WHERE tcp_resetID=%s
 """, (responseID, tcp_resetID) )
 
 # delete TCP Reset
-delete_TCP_reset = cursor.execute("DELETE FROM TCP_Reset WHERE tcp_resetID==%s" % (tcp_resetID) )
+delete_TCP_reset = cursor.execute("DELETE FROM TCP_Reset WHERE tcp_resetID=%s" % (tcp_resetID) )
 
 # execute the SQL query for Timebased Block
 cursor.execute("select * from Timebased_Block")
@@ -177,11 +177,11 @@ cursor.commit()
 
 # edit timebased block
 edit_timebased_block = cursor.execute("""
-UPDATE Timebased_Block SET responseID=%s, time_blocked=%s WHERE timebased_blockID==%s
+UPDATE Timebased_Block SET responseID=%s, time_blocked=%s WHERE timebased_blockID=%s
 """, (responseID, time_blocked, timebased_blockID) )
 
 # delete timebased block
-delete_timebased_block = cursor.execute("DELETE FROM Timebased_Block WHERE timebased_blockID==%s" % (timebased_blockID) )
+delete_timebased_block = cursor.execute("DELETE FROM Timebased_Block WHERE timebased_blockID=%s" % (timebased_blockID) )
 
 
 # execute the SQL query for Victim.
@@ -209,11 +209,11 @@ cursor.commit()
 
 # edit victim
 edit_victim = cursor.exeucte("""
-UPDATE victim SET ip_address=%s, nae=%s, role=%s WHERE victimID==%s
+UPDATE victim SET ip_address=%s, nae=%s, role=%s WHERE victimID=%s
 """, (ip_address, name, role, victimID) )
 
 # delete victim
-delete_victim = cursor.execute("DELETE FROM victim WHERE victimID==%s" %s (victimID ) )
+delete_victim = cursor.execute("DELETE FROM victim WHERE victimID=%s" %s (victimID ) )
 
 # execute the SQL query for time_interval_persistence.
 #cursor.execute("select * from time_interval_persistence")

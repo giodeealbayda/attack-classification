@@ -6,7 +6,7 @@ import MySQLdb
 db = MySQLdb.connect(host="localhost",
 			user = "root",
 			passwd = "root",
-			db = "siera")
+			db = "mydb")
 
 #create cursor object
 cursor = db.cursor()
