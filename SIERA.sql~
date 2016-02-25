@@ -117,7 +117,7 @@ DROP TABLE IF EXISTS `attack`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attack` (
-  `attackID` int(11) NOT NULL AUTO_INCREMENT,
+  `attackID` int(11) NOT NULL,
   `source_ip` mediumtext NOT NULL,
   `source_port` varchar(45) NOT NULL,
   `attackerID` int(11) NOT NULL,
@@ -159,7 +159,7 @@ DROP TABLE IF EXISTS `victim`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `victim` (
-  `victimID` int(11) NOT NULL AUTO_INCREMENT,
+  `victimID` int(11) NOT NULL,
   `ip_address` mediumtext NOT NULL,
   `name` varchar(45) NOT NULL,
   `role` mediumtext NOT NULL,
@@ -186,7 +186,7 @@ DROP TABLE IF EXISTS `attack_persistence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attack_persistence` (
-  `attackpersistenceID` int(11) NOT NULL AUTO_INCREMENT,
+  `attackpersistenceID` int(11) NOT NULL,
   `attackID` int(11) NOT NULL,
   `to_monitor` BINARY NOT NULL,
   `response` varchar(45) NOT NULL,
@@ -214,7 +214,7 @@ DROP TABLE IF EXISTS `attacker`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attacker` (
-  `attackerID` int(11) NOT NULL AUTO_INCREMENT,
+  `attackerID` int(11) NOT NULL,
   `ip_address` varchar(45) NOT NULL,
   PRIMARY KEY (`attackerID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -238,7 +238,7 @@ DROP TABLE IF EXISTS `response`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `response` (
-  `responseID` int(11) NOT NULL AUTO_INCREMENT,
+  `responseID` int(11) NOT NULL,
   `response_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `attackID` int(11) NOT NULL,
   PRIMARY KEY (`responseID`),
@@ -265,7 +265,7 @@ DROP TABLE IF EXISTS `time_interval_persistence`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `time_interval_persistence` (
-  `time_interval_persistenceID` int(11) NOT NULL AUTO_INCREMENT,
+  `time_interval_persistenceID` int(11) NOT NULL,
   `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`time_interval_persistenceID`)
@@ -278,12 +278,7 @@ CREATE TABLE `time_interval_persistence` (
 
 LOCK TABLES `time_interval_persistence` WRITE;
 /*!40000 ALTER TABLE `time_interval_persistence` DISABLE KEYS */;
-INSERT INTO `time_interval_persistence` VALUES 
-(1,'2015-01-20 10:20:54','2015-01-20 19:45:28'),
-(2,'2015-01-24 20:28:03','2015-01-25 01:17:21'),
-(3,'2015-01-26 00:22:21','2015-01-26 00:32:33'),
-(4,'2015-01-26 12:43:29','2015-01-26 21:03:43'),
-(5,'2015-01-29 19:54:16','0000-00-00 00:00:00');
+INSERT INTO `time_interval_persistence` VALUES (1,'2015-01-20 10:20:54','2015-01-20 19:45:28'),(2,'2015-01-24 20:28:03','2015-01-25 01:17:21'),(3,'2015-01-26 00:22:21','2015-01-26 00:32:33'),(4,'2015-01-26 12:43:29','2015-01-26 21:03:43'),(5,'2015-01-29 19:54:16','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `time_interval_persistence` ENABLE KEYS */;
 UNLOCK TABLES;
 

@@ -42,6 +42,7 @@ for row in to_evaluate:
 			if int(row1[12]) == 1: #high priority user
 				response = "ACL Block (high priority)";
 		
+
 			# low priority users
 			else: 
 				if attack_rate > 1: # high
