@@ -1,0 +1,295 @@
+-- MySQL dump 10.13  Distrib 5.6.19, for osx10.7 (i386)
+--
+-- Host: 127.0.0.1    Database: SIERA
+-- ------------------------------------------------------
+-- Server version	5.6.21
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `Permanent_Block`
+--
+
+DROP TABLE IF EXISTS `Permanent_Block`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Permanent_Block` (
+  `permanent_blockID` int(11) NOT NULL,
+  `responseID` int(11) NOT NULL,
+  PRIMARY KEY (`permanent_blockID`),
+  KEY `responseID` (`responseID`),
+  CONSTRAINT `permanent_block_ibfk_1` FOREIGN KEY (`responseID`) REFERENCES `response` (`responseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Permanent_Block`
+--
+
+LOCK TABLES `Permanent_Block` WRITE;
+/*!40000 ALTER TABLE `Permanent_Block` DISABLE KEYS */;
+INSERT INTO `Permanent_Block` VALUES
+(1,3),
+(2,4),
+(4,4),
+(3,5),
+(5,5);
+/*!40000 ALTER TABLE `Permanent_Block` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `TCP_Reset`
+--
+
+DROP TABLE IF EXISTS `TCP_Reset`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `TCP_Reset` (
+  `tcp_resetID` int(11) NOT NULL,
+  `responseID` int(11) NOT NULL,
+  PRIMARY KEY (`tcp_resetID`),
+  KEY `responseID` (`responseID`),
+  CONSTRAINT `tcp_reset_ibfk_1` FOREIGN KEY (`responseID`) REFERENCES `response` (`responseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `TCP_Reset`
+--
+
+LOCK TABLES `TCP_Reset` WRITE;
+/*!40000 ALTER TABLE `TCP_Reset` DISABLE KEYS */;
+INSERT INTO `TCP_Reset` VALUES
+(1,1),
+(2,1),
+(5,1),
+(3,2),
+(4,2);
+/*!40000 ALTER TABLE `TCP_Reset` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `Timebased_Block`
+--
+
+DROP TABLE IF EXISTS `Timebased_Block`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `Timebased_Block` (
+  `timebased_blockID` int(11) NOT NULL,
+  `responseID` int(11) NOT NULL,
+  `time_blocked` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`timebased_blockID`),
+  KEY `responseID` (`responseID`),
+  CONSTRAINT `timebased_block_ibfk_1` FOREIGN KEY (`responseID`) REFERENCES `response` (`responseID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `Timebased_Block`
+--
+
+LOCK TABLES `Timebased_Block` WRITE;
+/*!40000 ALTER TABLE `Timebased_Block` DISABLE KEYS */;
+INSERT INTO `Timebased_Block` VALUES
+(1,3,'2015-01-12 01:21:45'),
+(2,3,'2015-01-29 02:45:13'),
+(3,3,'2015-02-16 00:20:45'),
+(4,3,'2015-02-22 01:22:29'),
+(5,3,'2015-02-23 00:20:29');
+/*!40000 ALTER TABLE `Timebased_Block` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attack`
+--
+
+DROP TABLE IF EXISTS `attack`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attack` (
+  `attackID` int(11) NOT NULL,
+  `source_ip` mediumtext NOT NULL,
+  `source_port` varchar(45) NOT NULL,
+  `attackerID` int(11) NOT NULL,
+  `destination_ip` mediumtext NOT NULL,
+  `destination_port` varchar(45) NOT NULL,
+  `victimID` int(11) NOT NULL,
+  `attack_name` varchar(45) NOT NULL,
+  `protocol` varchar(45) NOT NULL,
+  `level` int(11) NOT NULL,
+  `attack_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`attackID`),
+  KEY `attackerID` (`attackerID`),
+  KEY `victimID` (`victimID`),
+  CONSTRAINT `attack_ibfk_1` FOREIGN KEY (`attackerID`) REFERENCES `attacker` (`attackerID`),
+  CONSTRAINT `attack_ibfk_2` FOREIGN KEY (`victimID`) REFERENCES `victim` (`victimID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attack`
+--
+
+LOCK TABLES `attack` WRITE;
+/*!40000 ALTER TABLE `attack` DISABLE KEYS */;
+INSERT INTO `attack` VALUES
+(1,'inet_aton(192.168.1.22)','1024',1,'inet_aton(192.168.1.56)','1024',2,'connect','TCP',2,'2016-02-23 15:41:29'),
+(2,'inet_aton(192.168.1.23)','3241',2,'inet_aton(192.168.1.57)','3241',1,'cut','TCP',1,'2016-02-23 15:41:29'),
+(3,'inet_aton(192.168.1.22)','9876',3,'inet_aton(192.168.1.58)','9876',3,'connect','UDP',4,'2016-02-23 15:41:29'),
+(4,'inet_aton(192.168.1.25)','2313',4,'inet_aton(192.168.1.59)','2313',1,'connect','UDP',2,'2016-02-23 15:41:29'),
+(5,'inet_aton(192.168.1.26)','3567',1,'inet_aton(192.168.1.60)','3576',5,'cut','UDP',3,'2015-01-29 21:31:27');
+/*!40000 ALTER TABLE `attack` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `victim`
+--
+
+DROP TABLE IF EXISTS `victim`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `victim` (
+  `victimID` int(11) NOT NULL,
+  `ip_address` mediumtext NOT NULL,
+  `name` varchar(45) NOT NULL,
+  `role` mediumtext NOT NULL,
+  PRIMARY KEY (`victimID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `victim`
+--
+
+LOCK TABLES `victim` WRITE;
+/*!40000 ALTER TABLE `victim` DISABLE KEYS */;
+INSERT INTO `victim` VALUES (1,'inet_aton(192.168.1.56)','bob','1'),(2,'inet_aton(192.168.1.32)','mary','0'),(3,'inet_aton(192.168.1.21)','bill','1'),(4,'inet_aton(192.168.1.2)','sarah','1'),(5,'inet_aton(192.168.1.22)','tony','0');
+/*!40000 ALTER TABLE `victim` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+--
+-- Table structure for table `attack_persistence`
+--
+
+DROP TABLE IF EXISTS `attack_persistence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attack_persistence` (
+  `attackpersistenceID` int(11) NOT NULL,
+  `attackID` int(11) NOT NULL,
+  `to_monitor` BINARY NOT NULL,
+  `response` varchar(45) NOT NULL,
+  PRIMARY KEY (`attackpersistenceID`),
+  KEY `attackID` (`attackID`),
+  CONSTRAINT `attack_persistence_ibfk_1` FOREIGN KEY (`attackID`) REFERENCES `attack` (`attackID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attack_persistence`
+--
+
+LOCK TABLES `attack_persistence` WRITE;
+/*!40000 ALTER TABLE `attack_persistence` DISABLE KEYS */;
+INSERT INTO `attack_persistence` VALUES (1,1,1,'TCP_reset'),(2,3,1,'timebased_block'),(3,2,1,'permanent_block'),(4,1,1,'permanent_block'),(5,4,1,'TCP_reset');
+/*!40000 ALTER TABLE `attack_persistence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `attacker`
+--
+
+DROP TABLE IF EXISTS `attacker`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `attacker` (
+  `attackerID` int(11) NOT NULL,
+  `ip_address` varchar(45) NOT NULL,
+  PRIMARY KEY (`attackerID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `attacker`
+--
+
+LOCK TABLES `attacker` WRITE;
+/*!40000 ALTER TABLE `attacker` DISABLE KEYS */;
+INSERT INTO `attacker` VALUES (1,'inet_aton(172.16.5.4)'),(2,'inet_aton(56.32.45.6)'),(3,'inet_aton(45.12.32.21)'),(4,'inet_aton(27.23.12.3)'),(5,'inet_aton(38.56.32.2)');
+/*!40000 ALTER TABLE `attacker` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `response`
+--
+
+DROP TABLE IF EXISTS `response`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `response` (
+  `responseID` int(11) NOT NULL,
+  `response_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `attackID` int(11) NOT NULL,
+  PRIMARY KEY (`responseID`),
+  KEY `attackID` (`attackID`),
+  CONSTRAINT `response_ibfk_1` FOREIGN KEY (`attackID`) REFERENCES `attack` (`attackID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `response`
+--
+
+LOCK TABLES `response` WRITE;
+/*!40000 ALTER TABLE `response` DISABLE KEYS */;
+INSERT INTO `response` VALUES (1,'2015-01-09 10:32:55',1),(2,'2015-01-15 19:45:31',5),(3,'2015-02-15 04:21:24',2),(4,'2015-02-19 07:26:13',3),(5,'2015-02-27 10:21:06',4);
+/*!40000 ALTER TABLE `response` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `time_interval_persistence`
+--
+
+DROP TABLE IF EXISTS `time_interval_persistence`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `time_interval_persistence` (
+  `time_interval_persistenceID` int(11) NOT NULL,
+  `start` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `end` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`time_interval_persistenceID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `time_interval_persistence`
+--
+
+LOCK TABLES `time_interval_persistence` WRITE;
+/*!40000 ALTER TABLE `time_interval_persistence` DISABLE KEYS */;
+INSERT INTO `time_interval_persistence` VALUES (1,'2015-01-20 10:20:54','2015-01-20 19:45:28'),(2,'2015-01-24 20:28:03','2015-01-25 01:17:21'),(3,'2015-01-26 00:22:21','2015-01-26 00:32:33'),(4,'2015-01-26 12:43:29','2015-01-26 21:03:43'),(5,'2015-01-29 19:54:16','0000-00-00 00:00:00');
+/*!40000 ALTER TABLE `time_interval_persistence` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2016-02-23 23:42:41
