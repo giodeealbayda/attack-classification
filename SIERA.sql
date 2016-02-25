@@ -173,7 +173,12 @@ CREATE TABLE `victim` (
 
 LOCK TABLES `victim` WRITE;
 /*!40000 ALTER TABLE `victim` DISABLE KEYS */;
-INSERT INTO `victim` VALUES (1,'inet_aton(192.168.1.56)','bob','1'),(2,'inet_aton(192.168.1.32)','mary','0'),(3,'inet_aton(192.168.1.21)','bill','1'),(4,'inet_aton(192.168.1.2)','sarah','1'),(5,'inet_aton(192.168.1.22)','tony','0');
+INSERT INTO `victim` VALUES
+(1,'inet_aton(192.168.1.56)','bob','1'),
+(2,'inet_aton(192.168.1.32)','mary','0'),
+(3,'inet_aton(192.168.1.21)','bill','1'),
+(4,'inet_aton(192.168.1.2)','sarah','1'),
+(5,'inet_aton(192.168.1.22)','tony','0');
 /*!40000 ALTER TABLE `victim` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
