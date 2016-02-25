@@ -6,7 +6,7 @@ import MySQLdb
 db = MySQLdb.connect(host="localhost",
 			user = "root",
 			passwd = "root",
-			db = "siera")
+			db = "mydb")
 
 #create cursor object
 cursor = db.cursor()
@@ -17,15 +17,28 @@ cursor = db.cursor()
 #week_attack = cursor.fetchall()
 
 # get attacks within timeframe (to be monitored)
-cursor.execute("SELECT a.attackid, a.source_ip, a.source_port, a.attackerID, a.destination_ip, a.destination_port, a.victimid, a.attack_name, a.protocol, a.level, a.attack_date, ap.to_monitor, v.role " + 
+cursor.execute("SELECT a.attackid, a.source_ip, a.source_port, a.attackerID, a.destination_ip, a.destination_port, a.victimid, a.attack_name, a.protocol, a.level, a.attack_date, ap.to_monitor " 
 "FROM attack a, attack_persistence ap, victim v " +
-"WHERE a.attackID = ap.attackID AND a.victimID = v.victimID and ap.to_monitor = 1")
+"WHERE a.attackID=ap.attackID AND a.victimID=v.victimID and ap.to_monitor=1 ORDER BY attackid")
 week_attack = cursor.fetchall()
 
 persistence_basis = 7.0 # 7 days
 
+# per attack per attack
 cursor.execute("select a.attack_name, count(a.attack_name), a.attackerID from attack a, attack_persistence ap where ap.to_monitor = 1 and a.attackID = ap.attackID group by a.attack_name, a.attackerID");
 to_evaluate = cursor.fetchall()
+
+# get list of hp users na victim
+cursor.execute("select hp.victimID from high_priority_users hp, victim v WHERE v.victimID = hp.victimID")
+hp_users = cursor.fetchall()
+
+i=0;
+for row in week_attack:
+	print row[0]
+
+for row in to_evaluate:
+	print row[0], ": ", row[1]
+
 
 for row in to_evaluate:
 	attack_rate = float(row[1])/persistence_basis
@@ -39,7 +52,7 @@ for row in to_evaluate:
 			response = "none"
 
 
-			if int(row1[12]) == 1: #high priority user
+			if int(row1[1]) == 1: #high priority user
 				response = "ACL Block (high priority)";
 		
 			# low priority users
@@ -58,5 +71,5 @@ for row in to_evaluate:
 					if protocol == "TCP":
 						response += " TCP Reset";
 	
-			print i, ": ", response
+#			print i, ": ", response
 			i+=1

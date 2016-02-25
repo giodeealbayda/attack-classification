@@ -25,7 +25,7 @@ INSERT INTO victim (ip_address, name) VALUES
 
 -- create attack
 INSERT INTO attack (source_ip, source_port, attackerID, destination_ip, destination_port, victimID, attack_name, protocol, level, attack_date) VALUES 
-(inet_aton('192.168.1.26'), 3121, 5, inet_aton(192.168.2.136), 3121, 5, 'tcp attack 1', 'tcp', 3, '2016-02-23 15:41:29'),
+(inet_aton('192.168.1.26'), 3121, 5, inet_aton('192.168.2.136'), 3121, 5, 'tcp attack 1', 'tcp', 3, '2016-02-23 15:41:29'),
 (inet_aton('192.168.5.137'), 2685, 14, inet_aton('192.168.6.138'), 2685, 2, 'udp attack 2', 'udp', 3, '2016-02-23 15:46:29'),
 (inet_aton('192.169.52.36'), 8542, 12, inet_aton('192.170.53.37'), 8542, 15, 'tcp attack 3', 'tcp', 5, '2016-02-23 15:47:29'),
 (inet_aton('192.167.54.65'), 9600, 20, inet_aton('192.168.55.66'), 9600, 13, 'udp attack 4', 'udp', 1, '2016-02-23 15:56:29'),
@@ -72,6 +72,25 @@ INSERT INTO high_priority_users (victimID) VALUES
 
 
 -- create attack_persistence
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('1', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('2', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('3', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('4', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('5', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('6', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('7', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('8', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('9', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('10', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('11', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('12', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('13', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('14', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('15', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('16', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('17', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('18', '1', 'none');
+INSERT INTO `mydb`.`attack_persistence` (`attackID`, `to_monitor`, `response`) VALUES ('19', '1', 'none');
 
 
 
