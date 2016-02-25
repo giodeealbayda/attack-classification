@@ -22,11 +22,31 @@ cursor.execute("SELECT a.attackid, a.source_ip, a.source_port, a.attackerID, a.d
 "WHERE a.attackID=ap.attackID AND a.victimID=v.victimID and ap.to_monitor=1 ORDER BY attackid")
 week_attack = cursor.fetchall()
 
+cursor.execute("SELECT a.attackID, a.source_ip, a.source_port, a.attackerID, a.destination_ip, a.destination_port, a.victimID, a.attack_name, a.protocol, a.level, a.attack_date, ap.to_monitor "
+" FROM attack a, attack_persistence ap, victim v, high_priority_users hp"
+" WHERE a.attackID=ap.attackID and a.victimID=v.victimID and ap.to_monitor=1 AND hp.victimID=a.victimID")
+hp_attack=cursor.fetchall()
+
+cursor.execute("SELECT a.attackID, a.source_ip, a.source_port, a.attackerID, a.destination_ip, a.destination_port, a.victimID, a.attack_name, a.protocol, a.level, a.attack_date, ap.to_monitor "
+" FROM attack a, attack_persistence ap, victim v, high_priority_users hp"
+" WHERE a.attackID=ap.attackID and a.victimID=v.victimID and ap.to_monitor=1 and hp.victimID!=a.victimID")
+not_hp_attack=cursor.fetchall()
+
 persistence_basis = 7.0 # 7 days
 
 # per attack per attacker
 cursor.execute("select a.attack_name, count(a.attack_name), a.attackerID from attack a, attack_persistence ap where ap.to_monitor = 1 and a.attackID = ap.attackID group by a.attack_name, a.attackerID");
 to_evaluate = cursor.fetchall()
+
+# set hp attack to block
+for entry in hp_attack:
+	print entry[0]
+
+i=0
+for entry in not_hp_attack:
+	print i
+	i+=1
+#	print entry[0]
 
 # get list of hp users na victim
 cursor.execute("select hp.victimID from high_priority_users hp, victim v WHERE v.victimID = hp.victimID")
@@ -39,6 +59,14 @@ i=0;
 #for row in to_evaluate:
 #	print row[0], ": ", row[1]
 
+for row in hp_attack:
+	print row[0]
+# acl block kagad because hp user
+for user in hp_users:
+	for data in week_attack:
+
+		if user[0]==data[6]:
+			response = "ACL Block"
 
 for row in to_evaluate:
 	attack_rate = float(row[1])/persistence_basis
@@ -71,5 +99,5 @@ for row in to_evaluate:
 					if protocol == "tcp":
 						response += " TCP Reset";
 	
-			print row[0], ": ", response
+			print row1[0], ": ", response
 			i+=1
