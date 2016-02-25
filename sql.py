@@ -146,6 +146,7 @@ for row in tcp_reset:
 # create TCP Reset
 create_TCP_reset = ("INSERT INTO TCP_Reset (responseID) values (%s)")
 cursor.execute(create_TCP_reset, responseID)
+cursor.commit()
 
 # edit TCP Reset
 edit_TCP_reset = cursor.execute("""
@@ -157,14 +158,62 @@ delete_TCP_reset = cursor.execute("DELETE FROM TCP_Reset WHERE tcp_resetID==%s" 
 
 # execute the SQL query for Timebased Block
 cursor.execute("select * from Timebased_Block")
-timebased_block = cursor.fetchall()
+timebased_block_record = cursor.fetchall()
+
+timebased_block {
+	'responseID': responseID,
+	'time_blocked': time_blocked
+}
 
 for row in timebased_block:
 	timebased_blockID = row[0]
 	responseID = row[1]
 	time_blocked = row[2]
 
+# create timebased block
+create_timebased_block = ("INSERT INTO Timebased_Block (responseID, time_blocked) values (%s, %s)")
+cursor.execute(create_timebased_block, responseID, time_blocked)
+cursor.commit()
 
+# edit timebased block
+edit_timebased_block = cursor.execute("""
+UPDATE Timebased_Block SET responseID=%s, time_blocked=%s WHERE timebased_blockID==%s
+""", (responseID, time_blocked, timebased_blockID) )
+
+# delete timebased block
+delete_timebased_block = cursor.execute("DELETE FROM Timebased_Block WHERE timebased_blockID==%s" % (timebased_blockID) )
+
+
+# execute the SQL query for Victim.
+cursor.execute("select * from victim")
+victim_record = cursor.fetchall()
+
+victim {
+	'ip_address': ip_address
+	'name': name
+	'role': role
+}
+
+for row in victim:
+	victimID = row[0]
+	ip_address = row[1]
+	name = row[2]
+	role = row[3]
+
+#	print"\n\n--- Victim: ", victimID, ": ", ip_address, ": ", name, ": ", role
+
+# create victim
+create_victim = ("INSERT INTO victim (ip_address, name, role) VALUES (%s, %s, %s)" )
+cursor.execute(create_victim, victim)
+cursor.commit()
+
+# edit victim
+edit_victim = cursor.exeucte("""
+UPDATE victim SET ip_address=%s, nae=%s, role=%s WHERE victimID==%s
+""", (ip_address, name, role, victimID) )
+
+# delete victim
+delete_victim = cursor.execute("DELETE FROM victim WHERE victimID==%s" %s (victimID ) )
 
 # execute the SQL query for time_interval_persistence.
 #cursor.execute("select * from time_interval_persistence")
@@ -176,16 +225,3 @@ for row in timebased_block:
 #	time_interval_date = row[2]
 
 #	print "\n\n---Time Interval Persistence: ", time_interval_persistenceID, ": ", time_persistence, ": ", time_interval_date
-
-# execute the SQL query for Victim.
-cursor.execute("select * from victim")
-victim = cursor.fetchall()
-
-for row in victim:
-	victimID = row[0]
-	ip_address = row[1]
-	name = row[2]
-	role = row[3]
-
-#	print"\n\n--- Victim: ", victimID, ": ", ip_address, ": ", name, ": ", role
-
