@@ -93,12 +93,10 @@ for row in attack_persistence:
 # create attack persistence
 create_attack_persistence = ("INSERT INTO attack_persistence (attackID, to_monitor, response) VALUES (%s, %s, %s)")
 cursor.execute(create_attack_persistence, attack_persistence)
-cursor.commit()
+cursor.commit() 
 
 # edit attack persistence
-edit_attack_persistence = cursor.execute("""
-UPDATE attack_persistence SET attackID=%s, to_monitor=%s, response=%s WHERE attackpersistenceID==%s
-""", (attackID, to_monitor, response, attackpersistenceID) )
+
 # delete attack persistence
 
 # execute the SQL query for permanent_block
