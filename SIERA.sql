@@ -115,8 +115,8 @@ DROP TABLE IF EXISTS `attack_rate`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attack_rate` (
   `attack_rate_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from` decimal(10,0) NOT NULL,
-  `to` decimal(10,0) NOT NULL,
+  `from` float NOT NULL,
+  `to` float NOT NULL,
   `attack_level` varchar(45) NOT NULL,
   PRIMARY KEY (`attack_rate_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -128,7 +128,7 @@ CREATE TABLE `attack_rate` (
 
 LOCK TABLES `attack_rate` WRITE;
 /*!40000 ALTER TABLE `attack_rate` DISABLE KEYS */;
-INSERT INTO `attack_rate` VALUES (1,0,1,'low'),(2,1,1,'medium'),(3,1,2,'high');
+INSERT INTO `attack_rate` VALUES (1,0,0.4999,'low'),(2,0.5,0.9999,'medium'),(3,1,100,'high');
 /*!40000 ALTER TABLE `attack_rate` ENABLE KEYS */;
 UNLOCK TABLES;
 
