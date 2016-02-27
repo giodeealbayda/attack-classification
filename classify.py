@@ -6,3 +6,5 @@ db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="siera_fin
 
 # create cursor
 cursor = db.cursor()
+
+# calculate persistence

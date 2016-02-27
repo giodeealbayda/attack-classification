@@ -1,0 +1,29 @@
+#!/usr/bin/python
+import MySQLdb
+
+class Attack(object):
+	def __init(self, attack_id, attack_name, security_id, protocol_type):
+		self.attack_id=attack_id
+		self.attack_name=attack_name
+		self.security_id=security_id
+		self.protocol_type=protocol_type
+
+#zebra = Attack("ABS", 12, "tcp")
+
+class Attack_log(object):
+	def __init(self, attack_log
+attack_log = {
+	'timestamp': timestamp,
+	'source_ip': source_ip,
+	'source_port': source_port,
+	'destination_ip': destination_ip,
+	'destination_port': destination_port,
+	'attack_id': attack_id,
+	'role_id': role_id	
+}
+
+attack_persistence = {
+	'attack_log_id': attack_log_id,
+	'timestamp': timestamp,
+	'persistence_count': persistence_count
+}
