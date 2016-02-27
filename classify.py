@@ -21,22 +21,22 @@ for row in all_attack_log:
 	attack_id=row[6]
 	role_id=row[7]
 
+
+	# per attack per attacker
+	select distinct(attack_id), count(source_ip), source_ip from attack_log group by attack_id;
+
+	# calculate persistence
+	cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count "
+	"from attack_persistence ap "
+	"left join attack_log al "
+	"on al.attack_log_id=ap.attack_log_id")
+	persistence_attack_logs=cursor.fetchall()
+
+	persistence_size = len(persistence_attack_logs) + 1
+
+	print attack_log_id
+	insert_persistence = "insert into attack_persistence (attack_log_id, persistence_count) values (" +str(attack_log_id) + ", " + str(persistence_size) + ")"
+	cursor.execute(insert_persistence)
+	db.commit()	
 	
-
-# calculate persistence
-cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count "
-"from attack_persistence ap "
-"left join attack_log al "
-"on al.attack_log_id=ap.attack_log_id")
-persistence_attack_logs=cursor.fetchall()
-
-persistence_size = len(persistence_attack_logs)
-if persistence_size==0: # create new entry
-
-else:
-	select distinct(attack_id), source_ip, count(source_ip) from attack_log where attack_id = ? group by attack_id order by timestamp; # per attack per attacker
-
-# create new entry in attack_persistence
-create_persistence = ("insert into attack_persistence (attack_log_id, timestamp, persistence_count) VALUES (%s, %s, %s")
-
 # set response
