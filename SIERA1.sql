@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS `mydb`.`high_priority_users` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`high_priority_users` (
   `high_priority_usersID` INT(11) NOT NULL AUTO_INCREMENT,
-  `victimID` INT(11) NOT NULL,
+  `victimID` INT(11),
   PRIMARY KEY (`high_priority_usersID`),
   CONSTRAINT `high_priority_users-victimID`
     FOREIGN KEY (`victimID`)
@@ -36,7 +36,7 @@ DROP TABLE IF EXISTS `mydb`.`attacker` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`attacker` (
   `attackerID` INT(11) NOT NULL AUTO_INCREMENT,
-  `ip_address` VARCHAR(45) NOT NULL,
+  `ip_address` MEDIUMTEXT NOT NULL,
   PRIMARY KEY (`attackerID`))
 ENGINE = InnoDB;
 
@@ -97,7 +97,7 @@ DROP TABLE IF EXISTS `mydb`.`response` ;
 
 CREATE TABLE IF NOT EXISTS `mydb`.`response` (
   `responseID` INT(11) NOT NULL AUTO_INCREMENT,
-  `responsecol` TIMESTAMP NOT NULL,
+  `response_time` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `attackID` INT(11) NOT NULL,
   PRIMARY KEY (`responseID`),
   CONSTRAINT `response-attackID`
