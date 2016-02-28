@@ -75,7 +75,7 @@ CREATE TABLE `attack_log` (
 
 LOCK TABLES `attack_log` WRITE;
 /*!40000 ALTER TABLE `attack_log` DISABLE KEYS */;
-INSERT INTO `attack_log` VALUES (1,'2016-02-26 16:45:58','209.193.76.194',443,'172.16.4.104',76,1,1),(2,'2016-02-03 13:03:29','209.193.76.194',443,'172.16.4.26',1243,1,2),(3,'2016-02-05 00:20:04','24.34.23.12',46766,'172.16.4.52',80,4,1),(4,'2016-02-05 01:12:23','209.193.76.194',443,'172.16.4.104',76,1,1),(5,'2016-02-05 01:13:18','209.193.76.194',443,'172.16.4.104',76,1,1),(6,'2016-02-06 15:12:05','24.34.23.12',46491,'172.16.4.26',1534,2,2),(7,'2016-02-06 15:15:37','209.193.76.194',443,'172.16.4.104',76,1,1),(8,'2016-02-06 18:12:43','74.124.24.34',1245,'172.16.4.67',17538,3,2);
+INSERT INTO `attack_log` VALUES (1,'2016-01-26 16:45:58','209.193.76.194',443,'172.16.4.104',76,1,1),(2,'2016-02-03 13:03:29','209.193.76.194',443,'172.16.4.26',1243,1,2),(3,'2016-02-05 00:20:04','24.34.23.12',46766,'172.16.4.52',80,4,1),(4,'2016-02-05 01:12:23','209.193.76.194',443,'172.16.4.104',76,1,1),(5,'2016-02-05 01:13:18','209.193.76.194',443,'172.16.4.104',76,1,1),(6,'2016-02-06 15:12:05','24.34.23.12',46491,'172.16.4.26',1534,2,2),(7,'2016-02-06 15:15:37','209.193.76.194',443,'172.16.4.104',76,1,1),(8,'2016-02-06 18:12:43','74.124.24.34',1245,'172.16.4.67',17538,3,2);
 /*!40000 ALTER TABLE `attack_log` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -115,8 +115,8 @@ DROP TABLE IF EXISTS `attack_rate`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attack_rate` (
   `attack_rate_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from` decimal(10,0) NOT NULL,
-  `to` decimal(10,0) NOT NULL,
+  `value_from` float NOT NULL,
+  `value_to` float NOT NULL,
   `attack_level` varchar(45) NOT NULL,
   PRIMARY KEY (`attack_rate_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -128,7 +128,7 @@ CREATE TABLE `attack_rate` (
 
 LOCK TABLES `attack_rate` WRITE;
 /*!40000 ALTER TABLE `attack_rate` DISABLE KEYS */;
-INSERT INTO `attack_rate` VALUES (1,0,1,'low'),(2,1,1,'medium'),(3,1,2,'high');
+INSERT INTO `attack_rate` VALUES (1,0,0.4999,'low'),(2,0.5,0.9999,'medium'),(3,1,100,'high');
 /*!40000 ALTER TABLE `attack_rate` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -170,6 +170,7 @@ CREATE TABLE `metric_conjunction` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
   `role_id` int(11) NOT NULL,
   `attack_rate_id` int(11) NOT NULL,
+  `protocol_type` varchar(5) NOT NULL,
   `tcp_reset` int(1) NOT NULL,
   `time_based` int(1) NOT NULL,
   `acl_block` int(1) NOT NULL,
@@ -178,7 +179,7 @@ CREATE TABLE `metric_conjunction` (
   KEY `metric_attack_rate_id_idx` (`attack_rate_id`),
   CONSTRAINT `metric_attack_rate_id` FOREIGN KEY (`attack_rate_id`) REFERENCES `attack_rate` (`attack_rate_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `metric_role_id` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +188,7 @@ CREATE TABLE `metric_conjunction` (
 
 LOCK TABLES `metric_conjunction` WRITE;
 /*!40000 ALTER TABLE `metric_conjunction` DISABLE KEYS */;
-INSERT INTO `metric_conjunction` VALUES (1,1,1,1,1,0),(2,1,2,1,1,0),(3,1,3,0,0,1),(4,2,1,0,0,1),(5,2,2,0,0,1),(6,2,3,0,0,1);
+INSERT INTO `metric_conjunction` VALUES (1,2,1,'tcp',1,1,0),(2,2,2,'tcp',1,1,0),(3,2,3,'tcp',0,0,1),(4,1,1,'tcp',0,0,1),(5,1,2,'tcp',0,0,1),(6,1,3,'tcp',0,0,1),(7,2,1,'udp',0,1,0),(8,2,2,'udp',0,1,0),(9,2,3,'udp',0,0,1),(10,1,1,'udp',0,0,1),(11,1,2,'udp',0,0,1),(12,1,3,'udp',0,0,1);
 /*!40000 ALTER TABLE `metric_conjunction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -231,12 +232,14 @@ CREATE TABLE `response` (
   `persistence_id` int(11) NOT NULL,
   `interval_id` int(11) NOT NULL,
   `attack_rate_id` int(11) NOT NULL,
-  `metric_id` int(11) NOT NULL,
+  `metric_id` int(11) NOT NULL DEFAULT '-1',
   `status` varchar(45) NOT NULL,
   PRIMARY KEY (`response_id`),
   KEY `response_attack_persistence_id_idx` (`persistence_id`),
   KEY `response_time_interval_id_idx` (`interval_id`),
   KEY `response_attack_rate_id_idx` (`attack_rate_id`),
+  KEY `response_metric_id_idx` (`metric_id`),
+  CONSTRAINT `response_metric_id` FOREIGN KEY (`metric_id`) REFERENCES `metric_conjunction` (`metric_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `response_attack_persistence_id` FOREIGN KEY (`persistence_id`) REFERENCES `attack_persistence` (`persistence_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `response_attack_rate_id` FOREIGN KEY (`attack_rate_id`) REFERENCES `attack_rate` (`attack_rate_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `response_time_interval_id` FOREIGN KEY (`interval_id`) REFERENCES `time_persistence_interval` (`interval_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -272,7 +275,7 @@ CREATE TABLE `role` (
 
 LOCK TABLES `role` WRITE;
 /*!40000 ALTER TABLE `role` DISABLE KEYS */;
-INSERT INTO `role` VALUES (1,'High Priority'),(2,'Regular');
+INSERT INTO `role` VALUES (1,'High Priority'),(2,'Low Priority');
 /*!40000 ALTER TABLE `role` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -392,7 +395,7 @@ CREATE TABLE `time_persistence_interval` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `interval` int(11) NOT NULL,
   PRIMARY KEY (`interval_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -401,6 +404,7 @@ CREATE TABLE `time_persistence_interval` (
 
 LOCK TABLES `time_persistence_interval` WRITE;
 /*!40000 ALTER TABLE `time_persistence_interval` DISABLE KEYS */;
+INSERT INTO `time_persistence_interval` VALUES (1,'2016-01-25 14:37:13',7);
 /*!40000 ALTER TABLE `time_persistence_interval` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -413,4 +417,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-27 11:51:17
+-- Dump completed on 2016-02-29  1:12:56
