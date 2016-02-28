@@ -74,15 +74,15 @@ for row in all_attack_log:
 		if attack_rate_id==1: # low
 			if protocol_type=="tcp": # low tcp
 
-				if role_id==1: # low tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1")
+				if role_id==1: # hp low tcp
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1 and protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 #					print "ACL"
 					response=1
 
-				else: # regular_user non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1")
+				else: # ru low-tcp
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1 protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 #					print "TCP RESET + 2 DAYS ACL"
@@ -90,32 +90,32 @@ for row in all_attack_log:
 
 			else: # non-tcp
 
-				if role_id==1: # high_priority non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1")
+				if role_id==1: # hp non-tcp
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1 and protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 #					print "ACL"
 					response=1
 
-				else: # regular_user non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1")
+				else: # ru non-tcp
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1 and protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 #					print "2 DAYS ACL"
 					response=3
 
 		elif attack_rate_id==2: #medium
-			if protocol_type=="tcp": # medium tcp
+			if protocol_type=="tcp": # tcp
 
 				if role_id==1: #high_priority medium tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=2")
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=2 and protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
 #					print "ACL"
 
 				else: #regular_user medium tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2")
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2 protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=4
@@ -124,14 +124,14 @@ for row in all_attack_log:
 			else: # non-tcp
 
 				if role_id==1: #high_priority medium non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=2")
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=2 protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
 #					print "ACL"
 
 				else: #regular_user medium non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2")
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2 protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=5
@@ -141,14 +141,14 @@ for row in all_attack_log:
 
 			if protocol_type=="tcp": # high tcp
 				if role_id==1: #high_priority high tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3")
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3 protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
 #					print "ACL"
 
 				else: #regular_user high tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3")
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3 protocol_type='tcp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
@@ -156,14 +156,14 @@ for row in all_attack_log:
 
 			else: # high non-tcp
 				if role_id==1: #high_priority non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3")
+					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3 protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
 #					print "ACL"
 
 				else: #regular_user non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3")
+					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3 protocol_type='udp'")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
 					response=1
