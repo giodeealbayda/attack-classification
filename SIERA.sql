@@ -115,8 +115,8 @@ DROP TABLE IF EXISTS `attack_rate`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `attack_rate` (
   `attack_rate_id` int(11) NOT NULL AUTO_INCREMENT,
-  `from` float NOT NULL,
-  `to` float NOT NULL,
+  `value_from` float NOT NULL,
+  `value_to` float NOT NULL,
   `attack_level` varchar(45) NOT NULL,
   PRIMARY KEY (`attack_rate_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
@@ -231,7 +231,7 @@ CREATE TABLE `response` (
   `persistence_id` int(11) NOT NULL,
   `interval_id` int(11) NOT NULL,
   `attack_rate_id` int(11) NOT NULL,
-  `metric_id` int(11) NOT NULL,
+  `metric_id` int(11) NOT NULL DEFAULT -1,
   `status` varchar(45) NOT NULL,
   PRIMARY KEY (`response_id`),
   KEY `response_attack_persistence_id_idx` (`persistence_id`),
@@ -399,6 +399,7 @@ CREATE TABLE `time_persistence_interval` (
 -- Dumping data for table `time_persistence_interval`
 --
 
+-- DEFAULT: 7 DAYS
 INSERT INTO `siera_final`.`time_persistence_interval` (`interval_id`, `timestamp`, `interval`) VALUES ('1', CURRENT_TIMESTAMP, '7');
 
 
