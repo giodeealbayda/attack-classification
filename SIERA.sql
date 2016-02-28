@@ -187,7 +187,7 @@ CREATE TABLE `metric_conjunction` (
 
 LOCK TABLES `metric_conjunction` WRITE;
 /*!40000 ALTER TABLE `metric_conjunction` DISABLE KEYS */;
-INSERT INTO `metric_conjunction` VALUES (1,1,1,1,1,0),(2,1,2,1,1,0),(3,1,3,0,0,1),(4,2,1,0,0,1),(5,2,2,0,0,1),(6,2,3,0,0,1);
+INSERT INTO `metric_conjunction` VALUES (1,2,1,1,1,0),(2,2,2,1,1,0),(3,2,3,0,0,1),(4,1,1,0,0,1),(5,1,2,0,0,1),(6,1,3,0,0,1);
 /*!40000 ALTER TABLE `metric_conjunction` ENABLE KEYS */;
 UNLOCK TABLES;
 
