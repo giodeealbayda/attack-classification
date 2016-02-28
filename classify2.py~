@@ -75,6 +75,6 @@ for entry in to_evaluate: #
 			else: # medium
 
 				if protocol == "tcp":
-					response += " (medium) TCP Reset ";
+					response += "(medium) TCP Reset ";
 	
 			print row1[0], ": ", response
