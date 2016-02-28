@@ -25,7 +25,8 @@ for row in all_attack_log:
 
 
 	# calculate attack persistence
-	cursor.execute("select count(attack_id) from attack_log where source_ip='" +str(source_ip)+ "' and attack_id=" + str(attack_id) + " and attack_log_id<"+str(attack_log_id) )
+	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.source_ip='" +str(source_ip)+ "' and al.attack_id=" + str(attack_id) + " and al.attack_log_id<"+str(attack_log_id) + " and date_sub(tpi.timestamp, interval tpi.interval_number day)" )
+#select al.attack_log_id  from attack_log al, time_persistence_interval tpi where date_sub(tpi.timestamp, INTERVAL 7 day);
 	persistence_list=cursor.fetchall()
 
 	# insert into attack_persistence
