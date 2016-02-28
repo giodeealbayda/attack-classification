@@ -24,71 +24,17 @@ for row in all_attack_log:
 	role_id=row[7]
 
 
-	# per attack per attacker
-#	cursor.execute("select distinct(attack_id), count(source_ip), source_ip from attack_log al where attack_id="+str(attack_id)+"order by al.attack_log_id group by attack_id")
-
-	# get attack persistence by attack log id
-	cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count from attack_persistence ap, attack_log al where al.attack_id="+str(attack_id)+" and al.source_ip='"+str(source_ip)+"'")
-	cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count from attack_persistence ap, attack_log al where al.attack_id=1 and al.source_ip='"+str(source_ip)
-"' and al.attack_log_id=ap.attack_log_id")
+	# calculate attack persistence
+	cursor.execute("select count(attack_id) from attack_log where source_ip='" +str(source_ip)+ "' and attack_id=" + str(attack_id) + " and attack_log_id<"+str(attack_log_id) )
 	persistence_list=cursor.fetchall()
 
-	if len(persistence_list)==0:
-		print "create"
-		cursor.execute("insert into attack_persistence (attack_log_id, persistence_count) values ("+str(attack_log_id)+",1)")
+	# insert into attack_persistence
+	for row in persistence_list:
+		value = row[0]+1
+		a = "insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + ", " + str(value) + ")"
+		cursor.execute(a)
+		#print a 
 		db.commit()
-	else:
-		print attack_id
-		print "with persistence record"
 
-#	if role_id==1:
-		# permanent block
-#		print "HIGH PRIORITY"
-		# create persistence na rin
-#	else:
-		#update persistence_count per attack per attacker
-#		print persistence_list[0]
-#		if persistence_list[0]==attack_id:
-#			print "HI"
-#			for row1 in persistence_list:
-#				attack_id1=row1[0]
-#				count=row1[1]
-#				source_ip1=row[2]
-		
-#				print i, ": ", attack_id1, ": ", source_ip1
 
-			# calculate persistence
-#				cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count "
-#			"from attack_persistence ap, attack_log al "
-#			"where al.attack_id="+str(attack_id1)+" "
-#			"and al.source_ip = '"+str(source_ip1)+"' "
-#			"and al.attack_log_id="+str(attack_log_id)+" "
-#			"order by ap.persistence_id desc")
-#				persistence_list = cursor.fetchall()
 
-		
-#				if len(persistence_list)==0: # first entry
-#					cursor.execute("insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + ", 1)")
-#					db.commit()
-	
-#				else:
-#					cursor.execute("insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + "," + str(i) + " )" )
-#					db.commit()
-		
-	#		cursor.execute("select ap.persistence_id, ap.attack_log_id, ap.timestamp, ap.persistence_count "
-	#		"from attack_persistence ap "
-	#		"left join attack_log al "
-	#		"on al.attack_id="+str(attack_id1) + " " +
-	#		"where ap.attack_log_id is null")
-	#		persistence_attack_logs=cursor.fetchall()
-#			print "----"
-	#		for row2 in persistence_attack_logs:
-
-	#			persistence_size = len(persistence_attack_logs) + 1
-	#			print persistence_size
-	#			insert_persistence = "insert into attack_persistence (attack_log_id, persistence_count) values (" +str(attack_log_id) + ", " + str(persistence_size) + ")"
-	#			print insert_persistence
-	#			cursor.execute(insert_persistence)
-	#			db.commit()	
-	
-# set response
