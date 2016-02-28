@@ -39,9 +39,16 @@ for row in all_attack_log:
 			cursor.execute(a)
 			#print a 
 			db.commit()
+
 		else:
-			print "HI"
-			break
 		# compute for attack_rate
+			cursor.execute("select * from time_persistence_interval order by interval_id desc limit 1")
+			interval_record = cursor.fetchone()
+			persistence_id = interval_record[0]
+			timestamp = interval_record[1]
+			interval = interval_record[2]
 
+			attack_rate = float(value)/float(interval)
+			print attack_rate
 
+			# create response

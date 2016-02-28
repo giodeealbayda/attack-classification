@@ -33,14 +33,22 @@ for row in all_attack_log:
 		value = row[0]+1
 		# double check if may entry na
 		cursor.execute("select * from attack_persistence where attack_log_id=" + str(attack_log_id) )
+		check_entry = cursor.fetchall()
 		if len(check_entry)==0:
 			a = "insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + ", " + str(value) + ")"
 			cursor.execute(a)
 			#print a 
 			db.commit()
+
 		else:
-			print "HI"
-			break
 		# compute for attack_rate
+			cursor.execute("select * from time_persistence_interval order by interval_id desc limit 1")
+			interval_record = cursor.fetchone()
+			persistence_id = interval_record[0]
+			timestamp = interval_record[1]
+			interval = interval_record[2]
 
+			attack_rate = float(value)/float(interval)
+			print attack_rate
 
+			
