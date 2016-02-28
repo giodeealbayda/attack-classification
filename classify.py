@@ -7,8 +7,8 @@ db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="siera_fin
 # create cursor
 cursor = db.cursor()
 
-# select ALL attacks
-cursor.execute("SELECT * FROM attack_log") # lacking: specify yung time
+# select ALL attacks within timerange
+cursor.execute("SELECT * FROM attack_log where timestamp < now() and timestamp < date_add(now(), interval + 7 day);")
 all_attack_log=cursor.fetchall()
 
 for row in all_attack_log:

@@ -8,7 +8,7 @@ db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="siera_fin
 cursor = db.cursor()
 
 # select ALL attacks
-cursor.execute("SELECT * FROM attack_log") # lacking: specify yung time
+cursor.execute("SELECT * FROM attack_log where timestamp < now() and timestamp < date_add(now(), interval + 7 day);")
 all_attack_log=cursor.fetchall()
 
 for row in all_attack_log:
@@ -221,7 +221,7 @@ for row in all_attack_log:
 			elif response==5: # 5 days ACL
 
 					# create 5 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 2, NOW(), DATE_ADD(NOW(), INTERVAL + 5 DAY)")
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 2, NOW(), DATE_ADD(NOW(), INTERVAL + 5 DAY) )")
 					db.commit()
 
 
