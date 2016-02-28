@@ -66,25 +66,24 @@ for row in all_attack_log:
 		cursor.execute("select protocol_type from attack where attack_id=" + str(attack_id) )
 		protocol_type = cursor.fetchone()
 		protocol_type = protocol_type[0]
-	#	print attack_id, ": ", protocol_type
 
 
-		response = "none"
-
+		response = 0
 		metric_id=0
 		if attack_rate_id==1: # low
 			if protocol_type=="tcp": # low tcp
-				response = "TCP Reset + 2 days acl block"
 
 				if role_id==1: # low tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: # regular_user non-tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=2
 
 			else: # non-tcp
 				response = "2 days acl block"
@@ -92,11 +91,13 @@ for row in all_attack_log:
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: # regular_user non-tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=3
 
 		elif attack_rate_id==2: #medium
 			if protocol_type=="tcp": # medium tcp
@@ -105,11 +106,13 @@ for row in all_attack_log:
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=2")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: #regular_user medium tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=4
 
 			else: # non-tcp
 				response = "5 days acl block" # medium non tcp
@@ -117,11 +120,13 @@ for row in all_attack_log:
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=2")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: #regular_user medium non-tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=2")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=5
 
 		else: # high (attack_rate_id = 3)
 			response = " forever acl block"
@@ -130,26 +135,34 @@ for row in all_attack_log:
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: #regular_user high tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 			else: # high non-tcp
 				if role_id==1: #high_priority non-tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate=3")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
 				else: #regular_user non-tcp
 					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate=3")
 					metric_id=cursor.fetchone()
 					metric_id=metric_id[0]
+					response=1
 
-		print response
-		print metric_id
-
-		# create response
-		cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", 'ongoing' )")
-		db.commit()
+		# check there is existing response id
+		cursor.execute("select response_id from response where persistence_id="+str(persistence_id))
+		response_id=cursor.fetchall()
+		
+		if len(response_id)==0:
+			print "NEW"
+			cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", 'ongoing' )")
+			db.commit()
+		else:
+			print "MERON NA E?"
