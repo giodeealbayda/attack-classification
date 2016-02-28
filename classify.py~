@@ -31,10 +31,16 @@ for row in all_attack_log:
 	# insert into attack_persistence
 	for row in persistence_list:
 		value = row[0]+1
-		a = "insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + ", " + str(value) + ")"
-		cursor.execute(a)
-		print a 
-		db.commit()
-
+		# double check if may entry na
+		cursor.execute("select * from attack_persistence where attack_log_id=" + str(attack_log_id) )
+		if len(check_entry)==0:
+			a = "insert into attack_persistence (attack_log_id, persistence_count) values (" + str(attack_log_id) + ", " + str(value) + ")"
+			cursor.execute(a)
+			#print a 
+			db.commit()
+		else:
+			print "HI"
+			break
+		# compute for attack_rate
 
 
