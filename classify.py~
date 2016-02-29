@@ -62,7 +62,7 @@ for row in all_attack_log:
 	print source_ip
 	cursor.execute("set @date = (select timestamp from attack_log where attack_log_id="+str(attack_log_id)+ "); ")
 	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.timestamp between date_sub(@date, interval tpi.interval_number day) and @date " +
-		"and al.source_ip='"+ str(source_ip) + "' and al.attack_log_id<="+str(attack_log_id) +" and al.attack_id=" +str(attack_id))
+		"and al.source_ip='"+ str(source_ip) + "' and al.attack_log_id<"+str(attack_log_id) +" and al.attack_id=" +str(attack_id))
 #select count(al.attack_id) from attack_log al where timestamp between date_sub(@date, interval 7 day) and  @date
 #and al.source_ip='209.193.76.194' and al.attack_id=1;
 	persistence_list=cursor.fetchall()
@@ -213,7 +213,7 @@ for row in all_attack_log:
 		
 		if len(response_id)==0:
 			#print "NEW"
-			cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", 'ongoing' )")
+			cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", '1' )")
 			db.commit()
 			
 			# get current response id
