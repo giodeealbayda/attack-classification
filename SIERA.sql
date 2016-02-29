@@ -402,13 +402,10 @@ CREATE TABLE `time_persistence_interval` (
 -- Dumping data for table `time_persistence_interval`
 --
 
--- DEFAULT: 7 DAYS
--- INSERT INTO `siera_final`.`time_persistence_interval` (`interval_id`, `timestamp`, `interval`) VALUES ('1', CURRENT_TIMESTAMP, '7');
-INSERT INTO `time_persistence_interval` VALUES (1,'2016-01-25 14:37:13',7);
 
 LOCK TABLES `time_persistence_interval` WRITE;
 /*!40000 ALTER TABLE `time_persistence_interval` DISABLE KEYS */;
-INSERT INTO `time_persistence_interval` VALUES (1,CURRENT_TIMESTAMP,7);
+INSERT INTO `time_persistence_interval` (interval_id, timestamp, interval_number) VALUES ('1','2016-01-25 14:37:13',7);
 /*!40000 ALTER TABLE `time_persistence_interval` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
