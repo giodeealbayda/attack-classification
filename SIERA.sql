@@ -128,7 +128,7 @@ CREATE TABLE `attack_rate` (
 
 LOCK TABLES `attack_rate` WRITE;
 /*!40000 ALTER TABLE `attack_rate` DISABLE KEYS */;
-INSERT INTO `attack_rate` VALUES (1,0,0.4999,'low'),(2,0.5,0.9999,'medium'),(3,1,100,'high');
+INSERT INTO `attack_rate` VALUES (1,0,0.4999,'low'),(2,0.5,1,'medium'),(3,1.0001,65535,'high');
 /*!40000 ALTER TABLE `attack_rate` ENABLE KEYS */;
 UNLOCK TABLES;
 
