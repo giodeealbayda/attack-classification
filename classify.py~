@@ -15,10 +15,25 @@ numdays=cursor.fetchall()
 for row1 in numdays:
 	interval = row1[0]
 
+# get num_days low attack
+cursor.execute("select * from time_based_range where level='Low'")
+low_num_all = cursor.fetchall()
+
+for row in low_num_all:
+	time_based_range_id_low = row[0]
+	level_low = row[1]
+	num_days_low = row[2]
+
+# get num_days medium
+cursor.execute("select * from time_based_range where level='Medium'")
+medium_num_all = cursor.fetchall()
+
+for row in medium_num_all:
+	time_based_range_id_medium = row[0]
+	level_medium = row[1]
+	num_days_medium = row[2]
+
 # select ALL attacks within timerange
-#cursor.execute("set @date = (select timestamp from attack_log where attack_log_id=" + str(attack_log_id) +"); select attack_log_id, @date from attack_log where timestamp between date_sub(@date, interval "+interval+" day) and @date");
-#	"set @date = (select timestamp from attack_log 
-#select al.attack_log_id, al.timestamp, al.source_ip, al.sour
 cursor.execute("SELECT al.attack_log_id, al.timestamp, al. source_ip, al.source_port, al.destination_ip, al.destination_port, al.attack_id, al.role_id FROM attack_log al, time_persistence_interval tpi where al.timestamp < date_add(al.timestamp, interval tpi.interval_number day);")
 
 
@@ -213,7 +228,7 @@ for row in all_attack_log:
 		
 		if len(response_id)==0:
 			#print "NEW"
-			cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", '1' )")
+			cursor.execute("insert into response (timestamp, persistence_id, interval_id, attack_rate_id, metric_id, status) values (CURRENT_TIMESTAMP, " + str(persistence_id) + ", " + str(interval_id) + ", " + str(attack_rate_id) + " , " + str(metric_id) + ", '0' )")
 			db.commit()
 			
 			# get current response id
@@ -236,13 +251,13 @@ for row in all_attack_log:
 					db.commit()
 
 					# create 2 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 1, NOW(), DATE_ADD(NOW(), INTERVAL + 2 DAY) )")
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
 					db.commit()
 
 			elif response==3: # 2 days ACL
 
 					# create 2 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 1, NOW(), DATE_ADD(NOW(), INTERVAL + 2 DAY) )")
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
 					db.commit()
 
 			elif response==4: # TCP Reset + 5 Days ACL
@@ -254,13 +269,13 @@ for row in all_attack_log:
 					db.commit
 
 					# create 5 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 2, NOW(), DATE_ADD(NOW(), INTERVAL + 5 DAY) )")
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_medium) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_medium) + " DAY) )")
 					db.commit()
 
 			elif response==5: # 5 days ACL
 
 					# create 5 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 2, NOW(), DATE_ADD(NOW(), INTERVAL + 5 DAY) )")
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", 2, NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
 					db.commit()
 
 
