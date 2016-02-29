@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import MySQLdb
+import datetime
 
 # connect to db
 db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="siera_final")
@@ -7,8 +8,23 @@ db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="siera_fin
 # create cursor
 cursor = db.cursor()
 
+#get latest attack interval
+cursor.execute("SELECT tl.interval_number from time_persistence_interval tl order by tl.timestamp desc limit 1")
+numdays=cursor.fetchall()
+
+for row1 in numdays:
+	interval = row1[0]
+
 # select ALL attacks within timerange
-cursor.execute("SELECT al.attack_log_id, al.timestamp, al. source_ip, al.source_port, al.destination_ip, al.destination_port, al.attack_id, al.role_id FROM attack_log al, time_persistence_interval tpi where al.timestamp < date_add(tpi.timestamp, interval tpi.interval_number day);")
+#cursor.execute("set @date = (select timestamp from attack_log where attack_log_id=" + str(attack_log_id) +"); select attack_log_id, @date from attack_log where timestamp between date_sub(@date, interval "+interval+" day) and @date");
+#	"set @date = (select timestamp from attack_log 
+#select al.attack_log_id, al.timestamp, al.source_ip, al.sour
+cursor.execute("SELECT al.attack_log_id, al.timestamp, al. source_ip, al.source_port, al.destination_ip, al.destination_port, al.attack_id, al.role_id FROM attack_log al, time_persistence_interval tpi where al.timestamp < date_add(al.timestamp, interval tpi.interval_number day);")
+
+
+#set @date = (select timestamp from attack_log where attack_log_id=8);
+#select attack_log_id, @date from attack_log where timestamp between date_sub(@date, interval 7 #day) and  @date;
+#cursor.execute("select * from attack_log order by attack_log_id");
 all_attack_log=cursor.fetchall()
 
 for row in all_attack_log:
@@ -23,10 +39,32 @@ for row in all_attack_log:
 	attack_id=row[6]
 	role_id=row[7]
 
+	# get latest timestamp
+#	cursor.execute("select timestamp from attack_log where attack_log_id="+str(attack_log_id) )
+#	end_date_record = cursor.fetchall()
 
+#	for i in end_date_record:
+#		end_date=end_date_record[0]
+
+
+#	DD = datetime.timedelta(days=interval)
+#	start_date = end_date[0] - DD
 	# calculate attack persistence
-	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.source_ip='" +str(source_ip)+ "' and al.attack_id=" + str(attack_id) + " and al.attack_log_id<"+str(attack_log_id) + " and al.timestamp < date_add(tpi.timestamp, interval tpi.interval_number day)" )
+#	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.source_ip='" +str(source_ip)+ "' and al.attack_id=" + str(attack_id) + " and al.attack_log_id<"+str(attack_log_id) + " and al.timestamp between '"
+#+str(start_date)+"' and '"+str(end_date[0])+"'")
+#" and CURRENT_TIMESTAMP")
+#'"+str(end_date[0])+"'" )
 #select al.attack_log_id  from attack_log al, time_persistence_interval tpi where date_sub(tpi.timestamp, INTERVAL 7 day);
+#	print end_date[0]
+#	print DD
+#	print start_date
+
+	print source_ip
+	cursor.execute("set @date = (select timestamp from attack_log where attack_log_id="+str(attack_log_id)+ "); ")
+	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.timestamp between date_sub(@date, interval tpi.interval_number day) and @date " +
+		"and al.source_ip='"+ str(source_ip) + "' and al.attack_log_id<="+str(attack_log_id) +" and al.attack_id=" +str(attack_id))
+#select count(al.attack_id) from attack_log al where timestamp between date_sub(@date, interval 7 day) and  @date
+#and al.source_ip='209.193.76.194' and al.attack_id=1;
 	persistence_list=cursor.fetchall()
 
 	# insert into attack_persistence
@@ -228,4 +266,5 @@ for row in all_attack_log:
 
 		else:
 			for a in response_id:
-				print a[0]
+				#print a[0]
+				print ' '
