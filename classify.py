@@ -124,103 +124,15 @@ for row in all_attack_log:
 
 		response = 0
 		metric_id=0
-		if attack_rate_id==1: # low
-			if protocol_type=="tcp": # low tcp
 
-				if role_id==1: # hp low tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1 and protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-#					print "ACL"
-					response=1
+		cursor.execute("select metric_id from metric_conjunction where role_id="+str(role_id)+" and attack_rate_id="+str(attack_rate_id)+" and protocol_type='"+str(protocol_type)+"'")
+		metric_id = cursor.fetchone()
+		metric_id = metric_id[0]
 
-				else: # ru low-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1 and  protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-#					print "TCP RESET + 2 DAYS ACL"
-					response=2
+		print metric_id
 
-			else: # non-tcp
 
-				if role_id==1: # hp non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=1 and protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-#					print "ACL"
-					response=1
 
-				else: # ru non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=1 and protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-#					print "2 DAYS ACL"
-					response=3
-
-		elif attack_rate_id==2: #medium
-			if protocol_type=="tcp": # tcp
-
-				if role_id==1: #high_priority medium tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=2 and protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
-
-				else: #regular_user medium tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=2 and  protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=4
-#					print "TCP RESET + 5 DAYS ACL"
-
-			else: # non-tcp
-
-				if role_id==1: #high_priority medium non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=2 and  protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
-
-				else: #regular_user medium non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=2 and  protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=5
-#					print "5 DAYS ACL"
-
-		else: # high (attack_rate_id = 3)
-
-			if protocol_type=="tcp": # high tcp
-				if role_id==1: #high_priority high tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=3 and  protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
-
-				else: #regular_user high tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and attack_rate_id=3 and  protocol_type='tcp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
-
-			else: # high non-tcp
-				if role_id==1: #high_priority non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=1 and attack_rate_id=3 and  protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
-
-				else: #regular_user non-tcp
-					cursor.execute("select metric_id from metric_conjunction where role_id=2 and  attack_rate_id=3 and  protocol_type='udp'")
-					metric_id=cursor.fetchone()
-					metric_id=metric_id[0]
-					response=1
-#					print "ACL"
 
 		# check there is existing response id
 		cursor.execute("select response_id from response where persistence_id="+str(persistence_id))
@@ -235,47 +147,48 @@ for row in all_attack_log:
 			cursor.execute("select response_id from response where persistence_id="+str(persistence_id))
 			response_id=cursor.fetchall()
 		
-			if response==1: # Permanent ACL
+
+			if metric_id==1: # tcp reset + 2 days
+				for x in response_id:
+					x = response_id[0]
+					
+					# create TCP Reset
+					cursor.execute("insert into tcp_reset (response_id) values (" + str(x[0]) + ")")
+					db.commit()
+
+					# create 2 Days ACL
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
+					db.commit()
+
+	
+			elif metric_id==2: # tcp reset + 5 days
+				for x in response_id:
+					x = response_id[0]
+					
+					# create TCP Reset
+					cursor.execute("insert into tcp_reset (response_id) values (" + str(x[0]) + ")")
+					db.commit()
+
+					# create 5 Days ACL
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + "," + str(time_based_range_id_medium) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
+
+					db.commit()
+	
+			elif metric_id==7: # 2 days
+					# create 2 Days ACL
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
+					db.commit()
+
+			elif metric_id==8: # 5 days
+					# create 5 Days ACL
+					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + "," + str(time_based_range_id_medium) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
+					db.commit()
+
+			else: # metric_id = 3, 4, 5, 6, 9, 10, 11, 12 (ACL Block)
 				for x in response_id:
 					x = response_id[0] # temp for response id
 #					print x[0]
 					cursor.execute("insert into permanent_block (response_id, is_block, last_modified) values (" + str(x[0]) + ", 1, CURRENT_TIMESTAMP)")
-					db.commit()
-
-			elif response==2: # TCP Reset + 2 Days ACL
-				for x in response_id:
-					x = response_id[0]
-					
-					# create TCP Reset
-					cursor.execute("insert into tcp_reset (response_id) values (" + str(x[0]) + ")")
-					db.commit()
-
-					# create 2 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
-					db.commit()
-
-			elif response==3: # 2 days ACL
-
-					# create 2 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
-					db.commit()
-
-			elif response==4: # TCP Reset + 5 Days ACL
-				for x in response_id:
-					x = response_id[0]
-					
-					# create TCP Reset
-					cursor.execute("insert into tcp_reset (response_id) values (" + str(x[0]) + ")")
-					db.commit
-
-					# create 5 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_medium) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_medium) + " DAY) )")
-					db.commit()
-
-			elif response==5: # 5 days ACL
-
-					# create 5 Days ACL
-					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + "," + str(time_based_range_id_medium) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
 					db.commit()
 
 
