@@ -36,10 +36,6 @@ for row in medium_num_all:
 # select ALL attacks within timerange
 cursor.execute("SELECT al.attack_log_id, al.timestamp, al. source_ip, al.source_port, al.destination_ip, al.destination_port, al.attack_id, al.role_id FROM attack_log al, time_persistence_interval tpi where al.timestamp < date_add(al.timestamp, interval tpi.interval_number day);")
 
-
-#set @date = (select timestamp from attack_log where attack_log_id=8);
-#select attack_log_id, @date from attack_log where timestamp between date_sub(@date, interval 7 #day) and  @date;
-#cursor.execute("select * from attack_log order by attack_log_id");
 all_attack_log=cursor.fetchall()
 
 for row in all_attack_log:
@@ -54,32 +50,10 @@ for row in all_attack_log:
 	attack_id=row[6]
 	role_id=row[7]
 
-	# get latest timestamp
-#	cursor.execute("select timestamp from attack_log where attack_log_id="+str(attack_log_id) )
-#	end_date_record = cursor.fetchall()
-
-#	for i in end_date_record:
-#		end_date=end_date_record[0]
-
-
-#	DD = datetime.timedelta(days=interval)
-#	start_date = end_date[0] - DD
-	# calculate attack persistence
-#	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.source_ip='" +str(source_ip)+ "' and al.attack_id=" + str(attack_id) + " and al.attack_log_id<"+str(attack_log_id) + " and al.timestamp between '"
-#+str(start_date)+"' and '"+str(end_date[0])+"'")
-#" and CURRENT_TIMESTAMP")
-#'"+str(end_date[0])+"'" )
-#select al.attack_log_id  from attack_log al, time_persistence_interval tpi where date_sub(tpi.timestamp, INTERVAL 7 day);
-#	print end_date[0]
-#	print DD
-#	print start_date
-
 	print source_ip
 	cursor.execute("set @date = (select timestamp from attack_log where attack_log_id="+str(attack_log_id)+ "); ")
 	cursor.execute("select count(al.attack_id) from attack_log al, time_persistence_interval tpi where al.timestamp between date_sub(@date, interval tpi.interval_number day) and @date " +
 		"and al.source_ip='"+ str(source_ip) + "' and al.attack_log_id<"+str(attack_log_id) +" and al.attack_id=" +str(attack_id))
-#select count(al.attack_id) from attack_log al where timestamp between date_sub(@date, interval 7 day) and  @date
-#and al.source_ip='209.193.76.194' and al.attack_id=1;
 	persistence_list=cursor.fetchall()
 
 	# insert into attack_persistence
@@ -103,17 +77,18 @@ for row in all_attack_log:
 		interval = interval_record[2]
 
 		attack_rate = float(value)/float(interval)
-		
+		print attack_rate
 		# persistence_id
 		cursor.execute("select persistence_id from attack_persistence where attack_log_id=" + str(attack_log_id) )
 		persistence_id = cursor.fetchone()
 		persistence_id=persistence_id[0]
 
 		# attack_rate_id
-		cursor.execute("select attack_rate_id from attack_rate where value_from <=" + str(attack_rate) + " and value_to >" + str(attack_rate) )
+		cursor.execute("select attack_rate_id from attack_rate where value_from <=" + str(attack_rate) + " and value_to >=" + str(attack_rate) )
 		attack_rate_id = cursor.fetchone()
 		attack_rate_id = attack_rate_id[0]
-		# print attack_rate_id
+			
+		# print str(attack_rate_id)
 
 
 		# get protocol_type
@@ -121,18 +96,14 @@ for row in all_attack_log:
 		protocol_type = cursor.fetchone()
 		protocol_type = protocol_type[0]
 
-
 		response = 0
 		metric_id=0
 
-		cursor.execute("select metric_id from metric_conjunction where role_id="+str(role_id)+" and attack_rate_id="+str(attack_rate_id)+" and protocol_type='"+str(protocol_type)+"'")
+		cursor.execute("select metric_id from metric_conjunction where role_id='"+str(role_id)+"' and attack_rate_id='"+str(attack_rate_id)+"' and protocol_type='"+str(protocol_type)+"'")
 		metric_id = cursor.fetchone()
 		metric_id = metric_id[0]
 
-		print metric_id
-
-
-
+#		print metric_id
 
 		# check there is existing response id
 		cursor.execute("select response_id from response where persistence_id="+str(persistence_id))
@@ -159,7 +130,6 @@ for row in all_attack_log:
 					# create 2 Days ACL
 					cursor.execute("insert into time_based (response_id, num_days, block_start, block_end) values (" + str(x[0]) + ", " + str(time_based_range_id_low) + ", NOW(), DATE_ADD(NOW(), INTERVAL + " + str(num_days_low) + " DAY) )")
 					db.commit()
-
 	
 			elif metric_id==2: # tcp reset + 5 days
 				for x in response_id:
@@ -190,7 +160,6 @@ for row in all_attack_log:
 #					print x[0]
 					cursor.execute("insert into permanent_block (response_id, is_block, last_modified) values (" + str(x[0]) + ", 1, CURRENT_TIMESTAMP)")
 					db.commit()
-
 
 
 		else:
